@@ -69,13 +69,13 @@ if __name__=="__main__":
 	# 		img = bigimg[y_positions[j]:y_positions[j] + y_len, x_positions[i]:x_positions[i] + x_len]
 
 
-	def show_block(x, y):
+	def show_block(y,x):
 		img = cv2.imread('phone.png', 1)
 		img = img[ y_positions[y]:y_positions[y]+y_len, x_positions[x]:x_positions[x]+x_len ]
 		cv2.imshow('image', img)
 	
 	
-	show_block(1,0)
+	show_block(1,2)
     # displaying the image
 	# cv2.imshow('image', img)
  
