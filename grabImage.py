@@ -1,3 +1,4 @@
+from queue import Empty
 from signal import pause
 from time import sleep
 import cv2
@@ -90,14 +91,25 @@ def solve(filename, play):
     # for i in range(9):
     #     print(shape(img, i))
     
+
+    used = []
     for i in range(7):
         for j in range(i+1,8):
             for k in range(j+1,9):
+                if i in used:
+                    break
+                if j in used:
+                    break
+                if k in used:
+                    continue
                 if check_shape(img, i, j ,k) == True and check_color(img, i, j, k) == True and check_style(img, i, j, k) == True:
+                    if len(used) != 0:
+                        sleep(0.1)
                     play(i)
                     play(j)
                     play(k)
-                    return
+                    used.extend([i,j,k])
+                    break
 
 
 

@@ -50,14 +50,14 @@ if __name__ == '__main__':
 			exit()
 		tap(positions[x][y])
 
-	pause_time = 0.7
 
 	start()
 	filename='phone.png'
-	sleep(pause_time)
+	sleep(0.2)
 	while True:
 		solve(filename, play)
-		sleep(pause_time)	
+		sleep(0.7)
+		# sleep(pause_time)	
 
 	
 
