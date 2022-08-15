@@ -19,8 +19,13 @@ class Shape(Enum):
     Circle=1
     Square=2
 
-# img = cv2.imread('phone.png',1)
-# cut = img
+class Color(Enum):
+    Red=0
+    Blue=1
+    Green=2
+
+img = cv2.imread('phone.png',1)
+cut = img
 # function to display the coordinates of
 # of the points clicked on the image
 def click_event(event, x, y, flags, params):
@@ -70,6 +75,17 @@ def shape(img,y, x):
     
     return Shape.Square
     #28~224, 52
+
+def color(img, y, x):
+    x_positions, y_positions = [ 89, 410, 730 ], [ 856, 1176, 1496 ]
+    bgr = [img[y_positions[y] + 55][x_positions[x] + 90][k] for k in range(3)]
+    if max(bgr) == bgr[0]:
+        return Color.Blue
+    if max(bgr) == bgr[1]:
+        return Color.Green
+    if max(bgr) == bgr[2]:
+        return Color.Red
+    return 'Error in Color'
     
 
 def show_block(img,y,x):
@@ -79,26 +95,15 @@ def show_block(img,y,x):
     # img = cv2.imread('phone.png', 1)
     cut = img[ y_positions[y]:y_positions[y]+y_len, x_positions[x]:x_positions[x]+x_len ]
     cv2.imshow('image', cut)
-	
+
+
 # driver function
 def solve():
     
     # reading the image
 	
  
-
-	# sz_y , sz_x = 2220, 1080
-
-	
-    # print(x_positions)
-
-	# img = bigimg
-
-	# for i in range(3):
-	# 	for j in range(3):
-	# 		img = bigimg[y_positions[j]:y_positions[j] + y_len, x_positions[i]:x_positions[i] + x_len]
-
-
+    
 	
 	
     # displaying the image
@@ -106,9 +111,13 @@ def solve():
  
 	# setting mouse handler for the image
     # and calling the click_event() function
-    # show_block(img,0,1)
+    # show_block(img,2,2)
+    # 90 55
     img = cv2.imread('phone.png',1)
 
+    for x in range(0,3):
+        for y in range(3):
+            print(x, y, color(img, x, y))
     for x in range(0,3):
         for y in range(3):
             print(x, y, shape(img, x, y))
