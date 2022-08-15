@@ -9,4 +9,4 @@ def get_screen(filename):
     binary_screenshot = binary_screenshot.replace(b'\r\r\n', b'\n')
     with open(filename,'wb') as f:
         f.write(binary_screenshot)
-get_screen(filename='phone.png')
+# get_screen(filename='phone.png')

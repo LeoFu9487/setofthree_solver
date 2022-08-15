@@ -1,7 +1,8 @@
 from time import sleep
 from tracemalloc import start
 from ppadb.client import Client as AdbClient
-
+from get_screenshot import get_screen
+from grabImage import solve
 
 if __name__ == '__main__':
 	client = AdbClient(host="127.0.0.1", port=5037) # Default is "127.0.0.1" and 5037
@@ -48,8 +49,10 @@ if __name__ == '__main__':
 			exit()
 		tap(positions[x][y])
 
+	filename='phone.png'
 
-	
+	get_screen(filename)
+	solve()
 	
 
 	
