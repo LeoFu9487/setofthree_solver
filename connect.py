@@ -43,17 +43,21 @@ if __name__ == '__main__':
 	]
 
 
-	def play(x, y):
+	def play(hash):
+		x, y = hash // 3, hash % 3
 		if (x < 0 or x > 2 or y < 0 or y > 2):
 			print('Wrong position to play')
 			exit()
 		tap(positions[x][y])
 
-	filename='phone.png'
+	pause_time = 0.7
 
-	get_screen(filename)
-	solve()
-	
+	start()
+	filename='phone.png'
+	sleep(pause_time)
+	while True:
+		solve(filename, play)
+		sleep(pause_time)	
 
 	
 

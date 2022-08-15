@@ -1,18 +1,8 @@
-# from time import sleep
-# from PIL import Image
-
-# im = Image.open("phone.png") #1080*2220
-
-# crop_rectangle = (0, 0, 540, 1110)
-# cropped_im = im.crop(crop_rectangle)
-
-# # sleep(3)
-
-# cropped_im.show()
-
-# importing the module
+from signal import pause
+from time import sleep
 import cv2
 from enum import Enum
+from get_screenshot import get_screen
 
 class Shape(Enum):
     Triangle=0
@@ -24,47 +14,14 @@ class Color(Enum):
     Blue=1
     Green=2
 
-img = cv2.imread('phone.png',1)
-cut = img
-# function to display the coordinates of
-# of the points clicked on the image
-def click_event(event, x, y, flags, params):
+class Style(Enum):
+    Empty=0
+    Stripe=1
+    Filled=2
 
-    # checking for left mouse clicks
-    if event == cv2.EVENT_LBUTTONDOWN:
  
-        # displaying the coordinates
-        # on the Shell
-        print(x, ' ', y)
- 
-        # displaying the coordinates
-        # on the image window
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(cut, str(x) + ',' +
-                    str(y), (x,y), font,
-                    1, (255, 0, 0), 2)
-        cv2.imshow('image', cut)
- 
-    # checking for right mouse clicks    
-    if event==cv2.EVENT_RBUTTONDOWN:
- 
-        # displaying the coordinates
-        # on the Shell
-        print(x, ' ', y)
- 
-        # displaying the coordinates
-        # on the image window
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        b = cut[y, x, 0]
-        g = cut[y, x, 1]
-        r = cut[y, x, 2]
-        cv2.putText(cut, str(b) + ',' +
-                    str(g) + ',' + str(r),
-                    (x,y), font, 1,
-                    (255, 255, 0), 2)
-        cv2.imshow('image', cut)
- 
-def shape(img,y, x):
+def shape(img, hash):
+    x,y = hash % 3, hash // 3
     x_positions, y_positions = [ 89, 410, 730 ], [ 856, 1176, 1496 ]
     for k in range(3):
         if img[y_positions[y] + 52][x_positions[x] + 28][k] != 255:
@@ -74,9 +31,9 @@ def shape(img,y, x):
             return Shape.Circle
     
     return Shape.Square
-    #28~224, 52
 
-def color(img, y, x):
+def color(img, hash):
+    x,y = hash % 3, hash // 3
     x_positions, y_positions = [ 89, 410, 730 ], [ 856, 1176, 1496 ]
     bgr = [img[y_positions[y] + 55][x_positions[x] + 90][k] for k in range(3)]
     if max(bgr) == bgr[0]:
@@ -87,49 +44,63 @@ def color(img, y, x):
         return Color.Red
     return 'Error in Color'
     
-
-def show_block(img,y,x):
+def style(img,hash):
+    x,y = hash % 3, hash // 3
     x_positions, y_positions = [ 89, 410, 730 ], [ 856, 1176, 1496 ]
-    x_len, y_len = 260, 259
+    for k in range(3):
+        if img[y_positions[y] + 130][x_positions[x] + 130][k] != 255:
+            break
+        if k == 2:
+            return Style.Empty
+    for k in range(3):
+        if img[y_positions[y] + 87][x_positions[x] + 90][k] != 255:
+            return Style.Filled
 
-    # img = cv2.imread('phone.png', 1)
-    cut = img[ y_positions[y]:y_positions[y]+y_len, x_positions[x]:x_positions[x]+x_len ]
-    cv2.imshow('image', cut)
+    return Style.Stripe
 
+def check_shape(img, hash1, hash2, hash3):
+    one, two, three = shape(img, hash1), shape(img, hash2), shape(img, hash3)
+    if one == two and two == three:
+        return True
+    if one != two and two != three and one != three:
+        return True
+    return False
 
-# driver function
-def solve():
+def check_color(img, hash1, hash2, hash3):
+    one, two, three = color(img, hash1), color(img, hash2), color(img, hash3)
+    if one == two and two == three:
+        return True
+    if one != two and two != three and one != three:
+        return True
+    return False
+
+def check_style(img, hash1, hash2, hash3):
+    one, two, three = style(img, hash1), style(img, hash2), style(img, hash3)
+    if one == two and two == three:
+        return True
+    if one != two and two != three and one != three:
+        return True
+    return False
+
+def solve(filename, play):
+    get_screen(filename)
+    # sleep(0.1)
+    img = cv2.imread(filename, 1)
     
-    # reading the image
-	
- 
+    # for i in range(9):
+    #     print(shape(img, i))
     
-	
-	
-    # displaying the image
-	# cv2.imshow('image', img)
- 
-	# setting mouse handler for the image
-    # and calling the click_event() function
-    # show_block(img,2,2)
-    # 90 55
-    img = cv2.imread('phone.png',1)
+    for i in range(7):
+        for j in range(i+1,8):
+            for k in range(j+1,9):
+                if check_shape(img, i, j ,k) == True and check_color(img, i, j, k) == True and check_style(img, i, j, k) == True:
+                    play(i)
+                    play(j)
+                    play(k)
+                    return
 
-    for x in range(0,3):
-        for y in range(3):
-            print(x, y, color(img, x, y))
-    for x in range(0,3):
-        for y in range(3):
-            print(x, y, shape(img, x, y))
-    # cv2.setMouseCallback('image', click_event)
- 
-    # wait for a key to be pressed to exit
-    # cv2.waitKey(0)
- 
-    # close the window
-    # cv2.destroyAllWindows()
 
-# solve()
+
 # 89~349	 856~1115
 # 410~670	 856~1115
 # 730~990	 856~1115
